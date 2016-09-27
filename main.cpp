@@ -1,28 +1,32 @@
 #include <iostream>
 
-#define BRANCH_LIMIT 20
+#define BRANCH_LIMIT 50
 
 using namespace std;
 
+#include "queue.c"
 
 
-void rule_one(string);
-void rule_two(string);
-void rule_three(string);
-void rule_four(string);
-void generate(string );
+void rule_one(string, CQueue*);
+void rule_two(string, CQueue*);
+void rule_three(string, CQueue*);
+void rule_four(string, CQueue*);
+void generate(CQueue*);
 void is_mu(string);
 
 int main(int argc, char const *argv[])
 {
 	string axiom = "MI";
 
-	cout << axiom << endl;
+	CQueue* Theorems = new CQueue; 
 
-	generate(axiom);
+	Theorems->enqueue(axiom);
+
+	generate(Theorems);
 
 	return 0;
 }
+
 
 void is_mu(string word){
 	if (word.length() == 2 and word[1] == 'U')
@@ -33,16 +37,27 @@ void is_mu(string word){
 }
 
 
-void generate(string axiom){
-	rule_one(axiom);
-	rule_three(axiom);
-	rule_four(axiom);
-	rule_two(axiom);
+void generate(CQueue* Theorems){
+
+	string root = Theorems->dequeue();
+
+	while (root[0] != '0'){
+
+		cout << root << endl;
+
+		is_mu(root);
+
+
+		rule_one(root, Theorems);
+		rule_three(root, Theorems);
+		rule_four(root, Theorems);
+		rule_two(root, Theorems);
+
+		root = Theorems->dequeue();
+	}
 }
 
-void rule_one(string word){
-
-	is_mu(word);
+void rule_one(string word, CQueue* Theorems){
 	
 	int n = word.length()-1;
 
@@ -51,14 +66,11 @@ void rule_one(string word){
 	} else
 		return;
 
-	
-	cout << word << endl;
-
-	generate(word);
+	Theorems->enqueue(word);
 
 }
 
-void rule_two( string word){
+void rule_two( string word, CQueue* Theorems){
 	if (word[0] == 'M')
 	{
 		word.erase( word.begin() );
@@ -72,14 +84,10 @@ void rule_two( string word){
 		return;
 	}
 
-	cout << word << endl;
-	
-	is_mu(word);
-
-	generate(word);
+	Theorems->enqueue(word);
 }
 
-void rule_three(string word){
+void rule_three(string word, CQueue* Theorems){
 	
 	int j;
 
@@ -92,19 +100,14 @@ void rule_three(string word){
 			string tmp = word;
 			tmp.erase(i, 2);
 			tmp[i] = 'U';
-			
-			cout << tmp << endl;
-
-			is_mu(tmp);
-
-			generate(tmp);
+			Theorems->enqueue(word);
 		}
 
 	}
 
 }
 
-void rule_four(string word){
+void rule_four(string word, CQueue* Theorems){
 
 	int j;
 	string old = word, neww;
@@ -119,20 +122,11 @@ void rule_four(string word){
 			neww.erase(i, 1);
 			if (old.compare(neww) != 0){
 
-				cout << neww << endl;
-
-				is_mu(neww);
-				generate(neww);
+				Theorems->enqueue(word);
 				old = neww;
 			}
 		}
 
-	}
-
-
-	if (old.compare(word) == 1)
-	{
-		return;
 	}
 
 }
