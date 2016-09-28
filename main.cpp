@@ -1,11 +1,12 @@
 #include <iostream>
 
-#define BRANCH_LIMIT 50
+#define BRANCH_LIMIT 500
 
 using namespace std;
 
 #include "queue.c"
 
+string goal;
 
 void rule_one(string, CQueue*);
 void rule_two(string, CQueue*);
@@ -18,6 +19,8 @@ int main(int argc, char const *argv[])
 {
 	string axiom = "MI";
 
+	goal = "MU";
+
 	CQueue* Theorems = new CQueue; 
 
 	Theorems->enqueue(axiom);
@@ -29,9 +32,9 @@ int main(int argc, char const *argv[])
 
 
 void is_mu(string word){
-	if (word.length() == 2 and word[1] == 'U')
+	if (word.compare(goal) == 0)
 	{
-		cout << "MU encontrado" << word << endl;
+		cout << "Objetivo " << goal << " encontrado. :D" << endl;
 		exit(0);
 	}
 }
@@ -43,8 +46,6 @@ void generate(CQueue* Theorems){
 
 	while (root[0] != '0'){
 
-		cout << root << endl;
-
 		is_mu(root);
 
 
@@ -55,6 +56,8 @@ void generate(CQueue* Theorems){
 
 		root = Theorems->dequeue();
 	}
+
+	cout << "Cola vacía" << endl;
 }
 
 void rule_one(string word, CQueue* Theorems){
@@ -100,7 +103,7 @@ void rule_three(string word, CQueue* Theorems){
 			string tmp = word;
 			tmp.erase(i, 2);
 			tmp[i] = 'U';
-			Theorems->enqueue(word);
+			Theorems->enqueue(tmp);
 		}
 
 	}
@@ -122,7 +125,7 @@ void rule_four(string word, CQueue* Theorems){
 			neww.erase(i, 1);
 			if (old.compare(neww) != 0){
 
-				Theorems->enqueue(word);
+				Theorems->enqueue(neww);
 				old = neww;
 			}
 		}

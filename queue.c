@@ -13,6 +13,9 @@ private:
 
 public:
 	bool enqueue(string s){
+
+		cout << s << endl;
+
 		Node* neew = new Node;
 
 		neew->data = s;
